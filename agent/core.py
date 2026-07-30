@@ -15,8 +15,9 @@ class Agent:
                 规则：
                 1. 如果用户的问题需要查询天气，调用天气工具。
                 2. 如果用户的问题需要计算，调用计算工具。
-                3. 工具返回的数据必须作为最终答案依据。
-                4. 不要编造工具不存在的信息。
+                3. 如果用户的问题需要查询时间，调用时间工具。
+                4. 工具返回的数据必须作为最终答案依据。
+                5. 不要编造工具不存在的信息。
                 """,
             },
         ]
@@ -32,7 +33,6 @@ class Agent:
             )
 
             message = response.choices[0].message
-            # 保存模型消息
             self.messages.append(message)
             if not message.tool_calls:
                 print("\n最终回答：")
@@ -48,11 +48,9 @@ class Agent:
 
                 print("参数:", arguments)
 
-                # 执行工具
                 tool_result = execute_tool(function_name, arguments)
                 print("工具结果:", tool_result)
 
-                # 返回工具结果给模型
                 self.messages.append(
                     {
                         "role": "tool",

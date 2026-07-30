@@ -6,7 +6,7 @@
 
 - **Agent Framework**（`main.py` + `agent/` + `config/` + `tools/`）
 - 学习示例（`examples/`，含 demo、单次 Tool Call、Agent Loop 脚本版）
-- 工具模块化（`tools/`）
+- 工具模块化（`tools/`：天气、计算器、时间）
 - 配置集中管理（`config/`）
 
 ## 环境要求
@@ -61,6 +61,7 @@ MODEL=gpt-5.6-sol
 # 命令行单次提问
 python main.py 北京天气怎么样
 python main.py 帮我算一下 3*203
+python main.py 现在几点了
 
 # 多轮对话（不传参数，输入 quit 退出）
 python main.py
@@ -86,7 +87,8 @@ ai-agent-demo/
 │   ├── __init__.py      # 对外导出 TOOL_SCHEMAS、execute_tool
 │   ├── registry.py      # 工具注册表与调度
 │   ├── weather.py       # 天气工具
-│   └── calculator.py    # 计算器工具
+│   ├── calculator.py    # 计算器工具
+│   └── time_tool.py     # 时间工具
 ├── examples/            # 学习示例（演进过程）
 │   ├── README.md
 │   ├── demo.py
@@ -110,6 +112,8 @@ ai-agent-demo/
 | 6 | 多轮对话 REPL | ✅ 完成 | 终端持续提问，输入 quit 退出 |
 | 7 | 计算器增强 | ✅ 完成 | 支持任意简单数学表达式 |
 | 8 | 工具自动注册 | ✅ 完成 | `@register_tool` 装饰器 |
+| 9 | 时间工具 | ✅ 完成 | `get_time` 返回当前日期与星期 |
+| 10 | 对话记忆 Memory | 🚧 进行中 | 将对话历史抽离为独立模块 |
 
 ## 模块职责
 
