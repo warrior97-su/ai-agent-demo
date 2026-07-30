@@ -11,91 +11,9 @@ client = OpenAI(
     api_key=os.environ["OPENAI_API_KEY"],
     base_url=os.environ.get("OPENAI_BASE_URL"),
 )
+from tools import TOOL_SCHEMAS, execute_tool
 
-tools = [
-    {
-        "type": "function",
-        "function": {
-            "name": "get_weather",
-            "description": "查询城市天气",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "city": {
-                        "type": "string",
-                        "description": "城市名称",
-                    },
-                },
-                "required": ["city"],
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_computed",
-            "description": "计算数学表达式",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "expression": {
-                        "type": "string",
-                        "description": "数学表达式，例如2*2",
-                    },
-                },
-                "required": ["expression"],
-            },
-        },
-    },
-]
-
-
-# 工具
-def get_weather(city):
-    weather_data = {
-        "北京": {"weather": "晴天", "temperature": 20, "unit": "摄氏度"},
-        "上海": {"weather": "雨天", "temperature": 18, "unit": "摄氏度"},
-        "广州": {"weather": "小雨", "temperature": 22, "unit": "摄氏度"},
-        "深圳": {"weather": "晴天", "temperature": 24, "unit": "摄氏度"},
-        "成都": {"weather": "多云", "temperature": 25, "unit": "摄氏度"},
-        "重庆": {
-            "weather": "小雨",
-            "temperature": 26,
-            "unit": "摄氏度",
-        },
-        "武汉": {
-            "weather": "多云",
-            "temperature": 28,
-            "unit": "摄氏度",
-        },
-        "南京": {
-            "weather": "小雨",
-            "temperature": 29,
-            "unit": "摄氏度",
-        },
-        "杭州": {
-            "weather": "晴天",
-            "temperature": 30,
-            "unit": "摄氏度",
-        },
-        "周口": {
-            "weather": "晴天",
-            "temperature": 5,
-            "unit": "摄氏度",
-        },
-    }
-    return weather_data.get(city, {"error": "没有这个城市的数据"})
-
-
-def get_computed(expression):
-    computed_data = {
-        "1*1": "1",
-        "2*2": "4",
-        "3*3": "9",
-        "4*4": "16",
-        "5*5": "25",
-    }
-    return computed_data.get(expression, {"error": "没有这个值的计算结果"})
+tools = TOOL_SCHEMAS
 
 
 messages = [
@@ -151,13 +69,9 @@ while True:
         print("参数:", arguments)
 
         # 执行工具
+        tool_result = execute_tool(function_name, arguments)
 
-        if function_name == "get_weather":
-            result = get_weather(arguments["city"])
-        elif function_name == "get_computed":
-            result = get_computed(arguments["expression"])
-
-        print("工具结果:", result)
+        print("工具结果:", tool_result)
 
         # 返回工具结果给模型
 
@@ -165,6 +79,6 @@ while True:
             {
                 "role": "tool",
                 "tool_call_id": tool_call.id,
-                "content": json.dumps(result, ensure_ascii=False),
+                "content": json.dumps(tool_result, ensure_ascii=False),
             }
         )
