@@ -109,6 +109,7 @@ ai-agent-demo/
 | 5 | 命令行传参 | ✅ 完成 | `python main.py <问题>` |
 | 6 | 多轮对话 REPL | ✅ 完成 | 终端持续提问，输入 quit 退出 |
 | 7 | 计算器增强 | ✅ 完成 | 支持任意简单数学表达式 |
+| 8 | 工具自动注册 | ✅ 完成 | `@register_tool` 装饰器 |
 
 ## 模块职责
 
@@ -121,9 +122,19 @@ ai-agent-demo/
 
 ## 添加新工具
 
-1. 在 `tools/` 下新建文件，定义 `TOOL_SCHEMA` 和工具函数
-2. 在 `tools/registry.py` 中注册
-3. 如需对外暴露，更新 `tools/__init__.py`
+1. 在 `tools/` 下新建文件，用 `@register_tool` 装饰工具函数
+2. 在 `tools/registry.py` 末尾添加 `import tools.你的工具模块`
+3. 运行 `python main.py` 验证
+
+示例：
+
+```python
+from tools.registry import register_tool
+
+@register_tool("tool_name", "工具描述", { ... parameters ... })
+def my_tool(arg):
+    return result
+```
 
 ## 注意事项
 

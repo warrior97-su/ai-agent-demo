@@ -1,22 +1,20 @@
-TOOL_SCHEMA = {
-    "type": "function",
-    "function": {
-        "name": "get_weather",
-        "description": "查询城市天气",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "city": {
-                    "type": "string",
-                    "description": "城市名称",
-                },
+from tools.registry import register_tool
+
+
+@register_tool(
+    "get_weather",
+    "查询城市天气",
+    {
+        "type": "object",
+        "properties": {
+            "city": {
+                "type": "string",
+                "description": "城市名称",
             },
-            "required": ["city"],
         },
+        "required": ["city"],
     },
-}
-
-
+)
 def get_weather(city):
     weather_data = {
         "北京": {"weather": "晴天", "temperature": 20, "unit": "摄氏度"},

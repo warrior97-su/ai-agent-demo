@@ -8,6 +8,26 @@
 
 ---
 
+## [0.8.0] - 2026-07-30
+
+工具自动注册：`@register_tool` 装饰器替代手动维护注册表。
+
+### 新增
+- `tools/registry.py` 新增 `@register_tool` 装饰器
+- 工具模块 import 时自动注册，`TOOL_SCHEMAS` / `AVAILABLE_TOOLS` 自动生成
+
+### 变更
+- `tools/weather.py`、`tools/calculator.py` 改用装饰器注册，移除独立 `TOOL_SCHEMA`
+- 新增工具只需：写函数 + `@register_tool` + 在 `registry.py` 末尾 import
+
+### 对比上一版本
+| 项目 | v0.7.0 | v0.8.0 |
+|------|--------|--------|
+| 工具注册 | 手动维护两个列表 | 装饰器自动注册 |
+| 新增工具 | 改 3 处 | 改 2 处（工具文件 + 一行 import） |
+
+---
+
 ## [0.7.0] - 2026-07-30
 
 计算器工具增强：支持任意简单数学表达式计算。
@@ -202,6 +222,8 @@ v0.5.0  命令行传参 + run 返回值
 v0.6.0  多轮对话 REPL
   ↓
 v0.7.0  计算器增强
+  ↓
+v0.8.0  工具自动注册（@register_tool）
   ↓
 v1.0.0  [计划] 首个完整 Framework 版本
 ```
