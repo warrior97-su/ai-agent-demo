@@ -18,11 +18,12 @@ TOOL_SCHEMA = {
 
 
 def calculate(expression):
-    computed_data = {
-        "1*1": "1",
-        "2*2": "4",
-        "3*3": "9",
-        "4*4": "16",
-        "5*5": "25",
-    }
-    return computed_data.get(expression, {"error": "没有这个值的计算结果"})
+    expression = expression.replace(" ", "")
+    allowed = set("0123456789+-*/().")
+    if not all(c in allowed for c in expression):
+        return {"error": "表达式包含无效字符"}
+    try:
+        result = eval(expression)  # 简单，但必须先做第 2 步安全检查
+        return result
+    except Exception:
+        return {"error": "计算失败"}
