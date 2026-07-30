@@ -37,7 +37,7 @@ class Agent:
             if not message.tool_calls:
                 print("\n最终回答：")
                 print(message.content)
-                break
+                return message.content
 
             for tool_call in message.tool_calls:
                 function_name = tool_call.function.name
