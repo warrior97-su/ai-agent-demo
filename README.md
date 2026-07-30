@@ -82,8 +82,7 @@ ai-agent-demo/
 │   └── settings.py      # 读取 .env，提供 MODEL、client 等
 ├── agent/               # Agent 核心
 │   ├── __init__.py
-│   ├── core.py          # Agent 类，封装 Agent Loop
-│   └── memory.py        # 对话记忆
+│   └── core.py          # Agent 类，封装 Agent Loop
 ├── tools/               # 工具层
 │   ├── __init__.py      # 对外导出 TOOL_SCHEMAS、execute_tool
 │   ├── registry.py      # 工具注册表与调度
@@ -114,14 +113,14 @@ ai-agent-demo/
 | 7 | 计算器增强 | ✅ 完成 | 支持任意简单数学表达式 |
 | 8 | 工具自动注册 | ✅ 完成 | `@register_tool` 装饰器 |
 | 9 | 时间工具 | ✅ 完成 | `get_time` 返回当前日期与星期 |
-| 10 | 对话记忆 Memory | ✅ 完成 | `ConversationMemory` 管理对话历史 |
+| 10 | 对话记忆 Memory | 📋 下一版 | 将对话历史抽离为独立模块 |
 
 ## 模块职责
 
 | 模块 | 职责 |
 |------|------|
 | `config` | 环境变量与 OpenAI 客户端配置 |
-| `agent` | Agent Loop：问模型 → 调工具 → 再问模型；`memory` 管理对话历史 |
+| `agent` | Agent Loop：问模型 → 调工具 → 再问模型 |
 | `tools` | 工具定义、注册与执行 |
 | `main` | 程序入口 |
 
