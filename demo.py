@@ -14,8 +14,8 @@ response = client.chat.completions.create(
     model="gpt-5.6-sol",
     messages=[
         {
-            "role": "user",
-            "content": "介绍一下AI Agent",
+            "role":"user",
+            "content":"介绍一下AI Agent"
         }
     ],
 )
