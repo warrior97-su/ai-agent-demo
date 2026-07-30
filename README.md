@@ -58,11 +58,11 @@ MODEL=gpt-5.6-sol
 ### 4. 运行
 
 ```bash
-# 命令行单次提问
+# 命令行提问（推荐）
 python main.py 北京天气怎么样
 python main.py 帮我算一下 2*2
 
-# 多轮对话（不传参数，输入 quit 退出）
+# 不传参数时使用默认问题
 python main.py
 
 # 学习示例（可选）
@@ -107,7 +107,7 @@ ai-agent-demo/
 | 3 | `main.py` | ✅ 完成 | 程序入口 |
 | 4 | 清理 | ✅ 完成 | 旧脚本归档至 `examples/` |
 | 5 | 命令行传参 | ✅ 完成 | `python main.py <问题>` |
-| 6 | 多轮对话 REPL | ✅ 完成 | 终端持续提问，输入 quit 退出 |
+| 6 | 多轮对话 REPL | 进行中 | 终端持续提问，输入 quit 退出 |
 
 ## 模块职责
 
