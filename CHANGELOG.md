@@ -8,6 +8,26 @@
 
 ---
 
+## [0.10.0] - 2026-07-30
+
+将对话历史从 Agent 类抽离为独立记忆模块。
+
+### 新增
+- `agent/memory.py`：`ConversationMemory` 类，管理 messages 列表
+- 支持 `add()`、`get_messages()`、`clear()`（保留 system prompt）
+
+### 变更
+- `agent/core.py` 用 `self.memory` 替代 `self.messages`
+- `agent/__init__.py` 导出 `ConversationMemory`
+
+### 对比上一版本
+| 项目 | v0.9.0 | v0.10.0 |
+|------|--------|---------|
+| 对话历史 | Agent 内部 list | 独立 Memory 模块 |
+| REPL 多轮 | 同一 Agent 实例 | 不变，底层走 Memory |
+
+---
+
 ## [0.9.0] - 2026-07-30
 
 新增时间工具，完成第 3 个工具的注册接入。
