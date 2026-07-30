@@ -1,12 +1,13 @@
 # AI Agent Demo
 
-基于 OpenAI SDK 的 AI Agent 入门示例，通过兼容 OpenAI 接口的 API 调用大模型。
+基于 OpenAI SDK 的小型 Agent Framework，支持 Tool Call 与 Agent Loop。
 
 ## 功能
 
-- 使用 OpenAI Python SDK 发起对话请求
-- 通过 `.env` 文件管理 API Key，避免密钥写入代码
-- 支持自定义 `base_url`，可对接 OpenAI 兼容接口
+- **Agent Framework**（`main.py` + `agent/` + `config/` + `tools/`）
+- 学习示例（`examples/`，含 demo、单次 Tool Call、Agent Loop 脚本版）
+- 工具模块化（`tools/`）
+- 配置集中管理（`config/`）
 
 ## 环境要求
 
@@ -38,8 +39,6 @@ pip install -r requirements.txt
 
 ### 3. 配置环境变量
 
-复制环境变量模板并填入真实配置：
-
 ```bash
 # Windows
 copy .env.example .env
@@ -53,29 +52,78 @@ cp .env.example .env
 ```env
 OPENAI_API_KEY=your_api_key_here
 OPENAI_BASE_URL=https://api.freemodel.dev/v1
+MODEL=gpt-5.6-sol
 ```
 
-### 4. 运行示例
+### 4. 运行
 
 ```bash
-python demo.py
+# Agent Framework（推荐）
+python main.py
+
+# 学习示例（可选）
+python examples/demo.py
+python examples/agent.py
+python examples/agent_loop.py
 ```
 
 ## 项目结构
 
 ```text
 ai-agent-demo/
-├── demo.py           # 示例脚本
-├── requirements.txt  # Python 依赖
-├── .env.example      # 环境变量模板
-├── .gitignore
-└── README.md
+├── main.py              # 程序入口
+├── config/              # 配置层
+│   ├── __init__.py
+│   └── settings.py      # 读取 .env，提供 MODEL、client 等
+├── agent/               # Agent 核心
+│   ├── __init__.py
+│   └── core.py          # Agent 类，封装 Agent Loop
+├── tools/               # 工具层
+│   ├── __init__.py      # 对外导出 TOOL_SCHEMAS、execute_tool
+│   ├── registry.py      # 工具注册表与调度
+│   ├── weather.py       # 天气工具
+│   └── calculator.py    # 计算器工具
+├── examples/            # 学习示例（演进过程）
+│   ├── README.md
+│   ├── demo.py
+│   ├── agent.py
+│   └── agent_loop.py
+├── requirements.txt
+├── .env.example
+├── README.md
+└── CHANGELOG.md         # 版本更新日志
 ```
+
+## 架构进度
+
+| 步骤 | 模块 | 状态 | 说明 |
+|------|------|------|------|
+| 1 | `config/settings.py` | ✅ 完成 | 集中读取 API Key、BASE_URL、MODEL |
+| 2 | `agent/core.py` | ✅ 完成 | Agent 类封装 Agent Loop |
+| 3 | `main.py` | ✅ 完成 | 程序入口 |
+| 4 | 清理 | ✅ 完成 | 旧脚本归档至 `examples/` |
+
+## 模块职责
+
+| 模块 | 职责 |
+|------|------|
+| `config` | 环境变量与 OpenAI 客户端配置 |
+| `agent` | Agent Loop：问模型 → 调工具 → 再问模型 |
+| `tools` | 工具定义、注册与执行 |
+| `main` | 程序入口 |
+
+## 添加新工具
+
+1. 在 `tools/` 下新建文件，定义 `TOOL_SCHEMA` 和工具函数
+2. 在 `tools/registry.py` 中注册
+3. 如需对外暴露，更新 `tools/__init__.py`
 
 ## 注意事项
 
-- `.env` 文件已被 Git 忽略，请勿将 API Key 提交到仓库
-- 如需更换模型，修改 `demo.py` 中的 `model` 参数即可
+- `.env` 已被 Git 忽略，请勿提交 API Key
+- 运行前请激活虚拟环境：`.venv\Scripts\activate`
+- 学习示例见 [examples/README.md](./examples/README.md)
+- 版本变更记录见 [CHANGELOG.md](./CHANGELOG.md)
 
 ## License
 

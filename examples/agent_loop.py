@@ -1,20 +1,14 @@
-import os
-
-from dotenv import load_dotenv
-from openai import OpenAI
 import json
+import sys
+from pathlib import Path
 
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
 
-load_dotenv()
-
-client = OpenAI(
-    api_key=os.environ["OPENAI_API_KEY"],
-    base_url=os.environ.get("OPENAI_BASE_URL"),
-)
+from config.settings import MODEL, client
 from tools import TOOL_SCHEMAS, execute_tool
 
 tools = TOOL_SCHEMAS
-
 
 messages = [
     {
@@ -36,44 +30,29 @@ messages = [
 
 while True:
     response = client.chat.completions.create(
-        model="gpt-5.6-sol",
+        model=MODEL,
         messages=messages,
         tools=tools,
         tool_choice="auto",
     )
 
     message = response.choices[0].message
-    # 保存模型消息
     messages.append(message)
-    # =====================
-    # 没有工具调用
-    # =====================
 
     if not message.tool_calls:
         print("\n最终回答：")
         print(message.content)
-
         break
-
-    # =====================
-    # 有工具调用
-    # =====================
 
     for tool_call in message.tool_calls:
         function_name = tool_call.function.name
-
         arguments = json.loads(tool_call.function.arguments)
 
         print("\n调用工具:", function_name)
-
         print("参数:", arguments)
 
-        # 执行工具
         tool_result = execute_tool(function_name, arguments)
-
         print("工具结果:", tool_result)
-
-        # 返回工具结果给模型
 
         messages.append(
             {
