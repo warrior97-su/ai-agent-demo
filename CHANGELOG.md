@@ -8,6 +8,31 @@
 
 ---
 
+## [0.10.0] - 2026-07-31
+
+将对话历史抽离为独立记忆模块，并增加 API 备用通道。
+
+### 新增
+- `agent/memory.py`：`ConversationMemory` 类，提供 `add()`、`get_messages()`、`clear()`
+- `config/settings.py`：`chat_create()` 主线路失败时自动切换 WorkBuddy 备用通道
+- 备用 API 支持独立 Key（`OPENAI_FALLBACK_API_KEY`）与 HTTP/2 连接
+
+### 变更
+- `agent/core.py`：`self.messages` 改为 `self.memory`；`SYSTEM_PROMPT` 单点定义
+- `agent/__init__.py` 导出 `ConversationMemory`
+- `agent/core.py` 通过 `chat_create()` 调用模型
+- `.env.example` 补充备用 API 配置项
+- `requirements.txt` 增加 `httpx[http2]`
+
+### 对比上一版本
+| 项目 | v0.9.0 | v0.10.0 |
+|------|--------|---------|
+| 对话历史 | Agent 内部 list | 独立 Memory 模块 |
+| REPL 多轮 | 同一 Agent 实例累积 messages | 不变，底层走 Memory |
+| API 调用 | 单线路 | 主备自动切换，成功后 sticky |
+
+---
+
 ## [0.9.0] - 2026-07-30
 
 新增时间工具，完成第 3 个工具的注册接入。

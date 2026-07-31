@@ -7,7 +7,8 @@
 - **Agent Framework**（`main.py` + `agent/` + `config/` + `tools/`）
 - 学习示例（`examples/`，含 demo、单次 Tool Call、Agent Loop 脚本版）
 - 工具模块化（`tools/`：天气、计算器、时间）
-- 配置集中管理（`config/`）
+- 对话记忆（`agent/memory.py`，REPL 多轮上下文）
+- 配置集中管理（`config/`，含 API 主备切换）
 
 ## 环境要求
 
@@ -53,6 +54,11 @@ cp .env.example .env
 OPENAI_API_KEY=your_api_key_here
 OPENAI_BASE_URL=https://api.freemodel.dev/v1
 MODEL=gpt-5.6-sol
+
+# 可选：主线路失败时自动切换备用通道
+OPENAI_FALLBACK_API_KEY=your_fallback_key_here
+OPENAI_FALLBACK_BASE_URL=https://work.freemodel.dev/v1
+OPENAI_FALLBACK_ENABLED=true
 ```
 
 ### 4. 运行
@@ -79,10 +85,11 @@ ai-agent-demo/
 ├── main.py              # 程序入口
 ├── config/              # 配置层
 │   ├── __init__.py
-│   └── settings.py      # 读取 .env，提供 MODEL、client 等
+│   └── settings.py      # 读取 .env，chat_create 主备 API
 ├── agent/               # Agent 核心
 │   ├── __init__.py
-│   └── core.py          # Agent 类，封装 Agent Loop
+│   ├── core.py          # Agent 类，封装 Agent Loop
+│   └── memory.py        # 对话记忆
 ├── tools/               # 工具层
 │   ├── __init__.py      # 对外导出 TOOL_SCHEMAS、execute_tool
 │   ├── registry.py      # 工具注册表与调度
@@ -113,14 +120,14 @@ ai-agent-demo/
 | 7 | 计算器增强 | ✅ 完成 | 支持任意简单数学表达式 |
 | 8 | 工具自动注册 | ✅ 完成 | `@register_tool` 装饰器 |
 | 9 | 时间工具 | ✅ 完成 | `get_time` 返回当前日期与星期 |
-| 10 | 对话记忆 Memory | 📋 下一版 | 将对话历史抽离为独立模块 |
+| 10 | 对话记忆 Memory | ✅ 完成 | `ConversationMemory` 管理对话历史 |
 
 ## 模块职责
 
 | 模块 | 职责 |
 |------|------|
-| `config` | 环境变量与 OpenAI 客户端配置 |
-| `agent` | Agent Loop：问模型 → 调工具 → 再问模型 |
+| `config` | 环境变量、OpenAI 客户端、API 主备切换 |
+| `agent` | Agent Loop；`memory` 管理多轮对话历史 |
 | `tools` | 工具定义、注册与执行 |
 | `main` | 程序入口 |
 
