@@ -32,5 +32,6 @@ def execute_tool(name, arguments):
 import tools.calculator  # noqa: E402, F401
 import tools.weather  # noqa: E402, F401
 import tools.time_tool  # noqa: E402, F401
+import tools.memory_tool  # noqa: E402, F401
 TOOL_SCHEMAS = [item["schema"] for item in _registry.values()]
 AVAILABLE_TOOLS = {name: item["func"] for name, item in _registry.items()}

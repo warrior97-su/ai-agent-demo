@@ -8,6 +8,7 @@
 - 学习示例（`examples/`，含 demo、单次 Tool Call、Agent Loop 脚本版）
 - 工具模块化（`tools/`：天气、计算器、时间）
 - 对话记忆（`agent/memory.py`，REPL 多轮上下文）
+- 长期记忆（SQLite 持久化，支持明确记住、忘记和重启恢复）
 - 配置集中管理（`config/`，含 API 主备切换）
 
 ## 环境要求
@@ -72,6 +73,10 @@ python main.py 现在几点了
 # 多轮对话（不传参数，输入 quit 退出）
 python main.py
 
+# 在 REPL 中可明确保存或删除长期记忆
+# 例如：记住我住南京
+# 例如：忘记我住哪里
+
 # 学习示例（可选）
 python examples/demo.py
 python examples/agent.py
@@ -89,13 +94,15 @@ ai-agent-demo/
 ├── agent/               # Agent 核心
 │   ├── __init__.py
 │   ├── core.py          # Agent 类，封装 Agent Loop
-│   └── memory.py        # 对话记忆
+│   ├── memory.py        # 对话记忆
+│   └── memory_store.py  # SQLite 长期记忆存储
 ├── tools/               # 工具层
 │   ├── __init__.py      # 对外导出 TOOL_SCHEMAS、execute_tool
 │   ├── registry.py      # 工具注册表与调度
 │   ├── weather.py       # 天气工具
 │   ├── calculator.py    # 计算器工具
-│   └── time_tool.py     # 时间工具
+│   ├── time_tool.py     # 时间工具
+│   └── memory_tool.py   # 记住/忘记长期记忆工具
 ├── examples/            # 学习示例（演进过程）
 │   ├── README.md
 │   ├── demo.py
@@ -104,7 +111,8 @@ ai-agent-demo/
 ├── requirements.txt
 ├── .env.example
 ├── README.md
-└── CHANGELOG.md         # 版本更新日志
+├── CHANGELOG.md         # 版本更新日志
+└── tests/               # 离线单元测试
 ```
 
 ## 架构进度
@@ -121,14 +129,15 @@ ai-agent-demo/
 | 8 | 工具自动注册 | ✅ 完成 | `@register_tool` 装饰器 |
 | 9 | 时间工具 | ✅ 完成 | `get_time` 返回当前日期与星期 |
 | 10 | 对话记忆 Memory | ✅ 完成 | `ConversationMemory` 管理对话历史 |
+| 11 | SQLite 长期记忆 | ✅ 完成 | 明确记住/忘记，重启后自动恢复 |
 
 ## 模块职责
 
 | 模块 | 职责 |
 |------|------|
 | `config` | 环境变量、OpenAI 客户端、API 主备切换 |
-| `agent` | Agent Loop；`memory` 管理多轮对话历史 |
-| `tools` | 工具定义、注册与执行 |
+| `agent` | Agent Loop；短期对话历史与 SQLite 长期记忆 |
+| `tools` | 工具定义、注册、执行与记住/忘记能力 |
 | `main` | 程序入口 |
 
 ## 添加新工具
@@ -150,7 +159,9 @@ def my_tool(arg):
 ## 注意事项
 
 - `.env` 已被 Git 忽略，请勿提交 API Key
+- `data/*.db` 已被 Git 忽略，长期记忆仅保存在本地
 - 运行前请激活虚拟环境：`.venv\Scripts\activate`
+- 长期记忆只保存用户明确要求记住的信息；请勿保存密码、API Key 等敏感数据
 - 学习示例见 [examples/README.md](./examples/README.md)
 - 版本变更记录见 [CHANGELOG.md](./CHANGELOG.md)
 
