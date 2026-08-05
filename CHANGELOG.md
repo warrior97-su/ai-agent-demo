@@ -8,6 +8,32 @@
 
 ---
 
+## [0.12.0] - 2026-08-05
+
+增强短期对话上下文管理，避免长时间使用 REPL 时持续累积消息，并支持主动清空当前会话。
+
+### 新增
+- `config/settings.py`：增加 `MAX_CONTEXT_MESSAGES` 配置，默认保留最近 20 条非 system 消息
+- `.env.example`：增加上下文消息数量配置示例
+- `tests/test_memory.py`：覆盖短期对话清空、上下文裁剪、system 消息保留和工具调用链完整性
+- `main.py`：REPL 增加 `clear` 命令，用于清空当前短期对话
+
+### 变更
+- `agent/memory.py`：支持限制发送给模型的对话消息数量
+- `agent/memory.py`：裁剪上下文时保留完整的 user、assistant tool call 和 tool result 消息链
+- `agent/memory.py`：`clear()` 保留全部 system 消息，因此不会删除已加载的长期事实
+- `agent/core.py`：创建 `ConversationMemory` 时应用 `MAX_CONTEXT_MESSAGES`
+
+### 对比上一版本
+| 项目 | v0.11.0 | v0.12.0 |
+|------|---------|---------|
+| 短期上下文 | 持续累积全部消息 | 可配置消息上限并自动裁剪 |
+| 工具调用链 | 无裁剪场景 | 裁剪时保持调用链完整 |
+| 会话清理 | 无 REPL 命令 | `clear` 清空短期对话 |
+| 长期事实 | 启动时加载 | 清空短期对话后继续保留 |
+
+---
+
 ## [0.11.0] - 2026-08-03
 
 新增基于 SQLite 的长期记忆，使 Agent 能在重启后恢复用户明确保存的信息。

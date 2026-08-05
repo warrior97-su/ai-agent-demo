@@ -7,7 +7,7 @@
 - **Agent Framework**（`main.py` + `agent/` + `config/` + `tools/`）
 - 学习示例（`examples/`，含 demo、单次 Tool Call、Agent Loop 脚本版）
 - 工具模块化（`tools/`：天气、计算器、时间）
-- 对话记忆（`agent/memory.py`，REPL 多轮上下文）
+- 对话记忆（`agent/memory.py`，支持上下文数量限制和安全裁剪）
 - 长期记忆（SQLite 持久化，支持明确记住、忘记和重启恢复）
 - 配置集中管理（`config/`，含 API 主备切换）
 
@@ -60,6 +60,9 @@ MODEL=gpt-5.6-sol
 OPENAI_FALLBACK_API_KEY=your_fallback_key_here
 OPENAI_FALLBACK_BASE_URL=https://work.freemodel.dev/v1
 OPENAI_FALLBACK_ENABLED=true
+
+# 可选：发送给模型的非 system 消息数量上限
+MAX_CONTEXT_MESSAGES=20
 ```
 
 ### 4. 运行
@@ -70,8 +73,12 @@ python main.py 北京天气怎么样
 python main.py 帮我算一下 3*203
 python main.py 现在几点了
 
-# 多轮对话（不传参数，输入 quit 退出）
+# 多轮对话（不传参数）
 python main.py
+
+# REPL 命令
+# clear：清空当前短期对话，保留长期记忆
+# quit：退出程序
 
 # 在 REPL 中可明确保存或删除长期记忆
 # 例如：记住我住南京
@@ -130,6 +137,7 @@ ai-agent-demo/
 | 9 | 时间工具 | ✅ 完成 | `get_time` 返回当前日期与星期 |
 | 10 | 对话记忆 Memory | ✅ 完成 | `ConversationMemory` 管理对话历史 |
 | 11 | SQLite 长期记忆 | ✅ 完成 | 明确记住/忘记，重启后自动恢复 |
+| 12 | 上下文管理 | ✅ 完成 | 限制消息数量，完整保留工具调用链，支持清空短期对话 |
 
 ## 模块职责
 
@@ -161,6 +169,7 @@ def my_tool(arg):
 - `.env` 已被 Git 忽略，请勿提交 API Key
 - `data/*.db` 已被 Git 忽略，长期记忆仅保存在本地
 - 运行前请激活虚拟环境：`.venv\Scripts\activate`
+- `MAX_CONTEXT_MESSAGES` 只限制非 system 消息；长期记忆等 system 上下文不会计入限制
 - 长期记忆只保存用户明确要求记住的信息；请勿保存密码、API Key 等敏感数据
 - 学习示例见 [examples/README.md](./examples/README.md)
 - 版本变更记录见 [CHANGELOG.md](./CHANGELOG.md)
