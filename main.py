@@ -13,11 +13,14 @@ def main():
         question = input("请输入问题: ").strip()
         if not question:
             continue
+        if question.casefold() == "clear":
+            agent.memory.clear()
+            print("当前对话已清空")
+            continue
         if question == "quit":
             print("Agent 已退出")
             break
         agent.run(question)
-
 
 if __name__ == "__main__":
     main()

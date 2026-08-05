@@ -3,8 +3,9 @@ from pathlib import Path
 
 from agent.memory import ConversationMemory
 from agent.memory_store import SQLiteMemoryStore
-from config.settings import MODEL, chat_create
+from config.settings import MODEL, chat_create, MAX_CONTEXT_MESSAGES
 from tools import TOOL_SCHEMAS, execute_tool
+import os
 
 SYSTEM_PROMPT = """
    你是一个智能助手。
@@ -26,12 +27,13 @@ class Agent:
         self.tools = TOOL_SCHEMAS
         self.user_id = "default"
         self.store = SQLiteMemoryStore(Path("data/memory.db"))
-        self.memory = ConversationMemory(SYSTEM_PROMPT)
+        self.memory = ConversationMemory(
+            SYSTEM_PROMPT, max_messages=MAX_CONTEXT_MESSAGES
+        )
         facts = self.store.list_facts(self.user_id)
         if facts:
             lines = [
-                f"- {fact['category']}.{fact['key']}：{fact['value']}"
-                for fact in facts
+                f"- {fact['category']}.{fact['key']}：{fact['value']}" for fact in facts
             ]
             self.memory.add(
                 {

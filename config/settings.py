@@ -14,6 +14,9 @@ OPENAI_FALLBACK_BASE_URL = os.environ.get(
     "OPENAI_FALLBACK_BASE_URL", "https://work.freemodel.dev/v1"
 )
 OPENAI_FALLBACK_ENABLED = os.environ.get("OPENAI_FALLBACK_ENABLED", "true").lower() == "true"
+MAX_CONTEXT_MESSAGES = int(
+    os.environ.get("MAX_CONTEXT_MESSAGES", "20")
+)
 MODEL = os.environ["MODEL"]
 
 _RETRYABLE_ERRORS = (
